@@ -15,6 +15,7 @@ class Model {
     var hasCompletedOnboarding = UserDefaults.standard.bool(forKey: "onboarding.completed")
     
     var recipes: [Recipe] = []
+    var allergens: [Allergen] = []
     
     var discoverRecipes = [
         RecipeCardModel(id: UUID(), name: "Pasta Carbonara", preptime: Duration.seconds(10 * 60), pictures: [
@@ -45,6 +46,19 @@ class Model {
                 let decoder = JSONDecoder()
                 Task { @MainActor in
                     self.recipes = try decoder.decode([Recipe].self, from: asset.data)
+                    print("Loaded \(self.recipes.count) Recipes")
+                }
+            } catch {
+                print("Error decoding JSON: \(error)")
+            }
+        }
+        
+        if let asset = NSDataAsset(name: "allergens.json") {
+            do {
+                let decoder = JSONDecoder()
+                Task { @MainActor in
+                    self.allergens = try decoder.decode([Allergen].self, from: asset.data)
+                    print("Loaded \(self.allergens.count) Allergens")
                 }
             } catch {
                 print("Error decoding JSON: \(error)")
