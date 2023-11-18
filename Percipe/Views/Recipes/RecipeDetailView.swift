@@ -33,25 +33,6 @@ struct RecipeDetailView: View {
         }
     }
     
-    func parseIso8601Interval(duration: String) -> Duration {
-        var duration = duration
-        if duration.hasPrefix("PT") { duration.removeFirst(2) }
-        let hour, minute, second: Double
-        if let index = duration.firstIndex(of: "H") {
-            hour = Double(duration[..<index]) ?? 0
-            duration.removeSubrange(...index)
-        } else { hour = 0 }
-        if let index = duration.firstIndex(of: "M") {
-            minute = Double(duration[..<index]) ?? 0
-            duration.removeSubrange(...index)
-        } else { minute = 0 }
-        if let index = duration.firstIndex(of: "S") {
-            second = Double(duration[..<index]) ?? 0
-        } else { second = 0 }
-        
-        return Duration.seconds(second + minute * 60 + hour * 3600)
-    }
-    
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
@@ -88,7 +69,8 @@ struct RecipeDetailView: View {
                 JustifiedLabel(text: recipe.description)
                     .padding(.horizontal)
                 
-                let durationMins = parseIso8601Interval(duration: recipe.prepTime)
+                let durationMins = recipe.prepTime.parseIso8601Interval()
+
                 HStack {
                     Label(difficulties[recipe.difficulty] ?? "Easy", systemImage: "frying.pan")
                     Label("\(durationMins.components.seconds / 60) min", systemImage: "clock")

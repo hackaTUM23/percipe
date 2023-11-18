@@ -43,3 +43,24 @@ extension View {
             .mask(self)
     }
 }
+
+extension String {
+    func parseIso8601Interval() -> Duration {
+        var duration = self
+        if duration.hasPrefix("PT") { duration.removeFirst(2) }
+        let hour, minute, second: Double
+        if let index = duration.firstIndex(of: "H") {
+            hour = Double(duration[..<index]) ?? 0
+            duration.removeSubrange(...index)
+        } else { hour = 0 }
+        if let index = duration.firstIndex(of: "M") {
+            minute = Double(duration[..<index]) ?? 0
+            duration.removeSubrange(...index)
+        } else { minute = 0 }
+        if let index = duration.firstIndex(of: "S") {
+            second = Double(duration[..<index]) ?? 0
+        } else { second = 0 }
+        
+        return Duration.seconds(second + minute * 60 + hour * 3600)
+    }
+}
