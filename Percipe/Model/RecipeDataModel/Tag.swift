@@ -9,11 +9,11 @@ import Foundation
 
 class Tag: Codable {
     var id, type, name, slug: String
-    var colorHandle: String
+    var colorHandle: String?
     var preferences: [String]
     var displayLabel: Bool
 
-    init(id: String, type: String, name: String, slug: String, colorHandle: String, preferences: [String], displayLabel: Bool) {
+    init(id: String, type: String, name: String, slug: String, colorHandle: String?, preferences: [String], displayLabel: Bool) {
         self.id = id
         self.type = type
         self.name = name
