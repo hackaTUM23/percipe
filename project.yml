@@ -1,7 +1,7 @@
 name: Percipe
 options:
   deploymentTarget:
-    iOS: 17.1
+    iOS: 17.0
   defaultConfig: Release
 packages:
   swift-collections:
@@ -24,6 +24,7 @@ targets:
     settings:
       type: application
       base:
+        DEVELOPMENT_TEAM: "7PLLZ436SG"
         PRODUCT_BUNDLE_IDENTIFIER: "de.percipe"
         PRODUCT_NAME: Percipe
         TARGETED_DEVICE_FAMILY: 1
