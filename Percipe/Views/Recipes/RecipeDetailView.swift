@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct RecipeDetailView: View {
+    let model = Model.shared
+    
     let recipe: Recipe
     
     var amounts: [String: String] = [:]
@@ -85,7 +87,7 @@ struct RecipeDetailView: View {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack {
                         ForEach(recipe.ingredients, id: \.id) { ingredient in
-                            IngredientTile(name: ingredient.name, amount: amounts[ingredient.id] ?? "", imageUrl: "https://img.hellofresh.com/w_1024,q_auto,f_auto,c_limit,fl_lossy/hellofresh_s3\(ingredient.imagePath ?? "")")
+                            IngredientTile(name: ingredient.name, amount: amounts[ingredient.id] ?? "", imageUrl: "https://img.hellofresh.com/w_1024,q_auto,f_auto,c_limit,fl_lossy/hellofresh_s3\(ingredient.imagePath ?? "")", isAllergy: self.model.userPreferences.allergies.contains(where: { ingredient.id == $0 }))
                         }
                     }
                     .padding(.horizontal)
@@ -128,7 +130,7 @@ struct RecipeDetailView: View {
                             .padding(.horizontal)
                     }
                     
-                    Text(step.instructions)
+                    JustifiedLabel(text: step.instructions)
                         .padding(.horizontal)
                         .padding(.bottom)
                 }

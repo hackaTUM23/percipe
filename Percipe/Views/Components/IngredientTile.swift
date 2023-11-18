@@ -56,6 +56,7 @@ struct IngredientTile: View {
             if self.isAllergy {
                 RoundedRectangle(cornerRadius: 6)
                     .stroke(.red, lineWidth: 2)
+                    .truncationMode(.middle)
                 Image(systemName: "exclamationmark.triangle")
                     .foregroundColor(.red)
                     .font(.title)
