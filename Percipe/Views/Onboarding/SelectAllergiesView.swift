@@ -24,7 +24,7 @@ struct SelectAllergiesView: View {
             var height = CGFloat.zero
 
             return ZStack(alignment: .topLeading) {
-                ForEach(model.allergens, id: \.id) { item in
+                ForEach(model.distinctAllergens, id: \.id) { item in
                     ChipView(titleKey: item.name, isSelected: model.userPreferences.allergies.contains{
                         $0 == item.id
                     }).onTapGesture {
@@ -38,7 +38,7 @@ struct SelectAllergiesView: View {
                             height -= d.height
                         }
                         let result = width
-                        if item.id == model.allergens.last!.id {
+                        if item.id == model.distinctAllergens.last!.id {
                             width = 0 //last item
                         } else {
                             width -= d.width
@@ -47,7 +47,7 @@ struct SelectAllergiesView: View {
                     })
                     .alignmentGuide(.top, computeValue: {d in
                         let result = height
-                        if item.id == model.allergens.last!.id {
+                        if item.id == model.distinctAllergens.last!.id {
                             height = 0 // last item
                         }
                         return result

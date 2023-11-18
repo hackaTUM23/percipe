@@ -21,7 +21,9 @@ class Model {
     var searchText: String = ""
     
     var allergens: [Allergen] = []
+    var distinctAllergens: [Allergen] = []
     var tags: [Tag] = []
+    var distinctTags: [Tag] = []
     var ingredients: [RecipeIngredient] = []
     
     var discoverRecipes: [RecipeCardModel] = []
@@ -58,20 +60,62 @@ class Model {
     
     func toggleAllergy(id: String) {
         let index = userPreferences.allergies.firstIndex(of: id)
+        var indicesToToggle: [Int] = []
+        var idsToAppend: [String] = []
+        let item = allergens.first {
+            $0.id == id
+        }
+        if let item = item {
+            let sameNames = allergens.filter {
+                $0.name == item.name
+            }
+            sameNames.forEach { candidate in
+                idsToAppend.append(candidate.id)
+                if let index = userPreferences.allergies.firstIndex(of: candidate.id) {
+                    indicesToToggle.append(index)
+                }
+            }
+        }
+        let sorted = indicesToToggle.sorted(by: { $0 > $1 })
         if let index = index {
-            userPreferences.allergies.remove(at: index)
+            sorted.forEach {
+                userPreferences.allergies.remove(at: $0)
+            }
         } else {
-            userPreferences.allergies.append(id)
+            idsToAppend.forEach {
+                userPreferences.allergies.append($0)
+            }
         }
         persistUserPreferences()
     }
     
     func toggleRestriction(id: String) {
         let index = userPreferences.restrictions.firstIndex(of: id)
+        var indicesToToggle: [Int] = []
+        var idsToAppend: [String] = []
+        let item = tags.first {
+            $0.id == id
+        }
+        if let item = item {
+            let sameNames = tags.filter {
+                $0.name == item.name
+            }
+            sameNames.forEach { candidate in
+                idsToAppend.append(candidate.id)
+                if let index = userPreferences.restrictions.firstIndex(of: candidate.id) {
+                    indicesToToggle.append(index)
+                }
+            }
+        }
+        let sorted = indicesToToggle.sorted(by: { $0 > $1 })
         if let index = index {
-            userPreferences.restrictions.remove(at: index)
+            sorted.forEach {
+                userPreferences.restrictions.remove(at: $0)
+            }
         } else {
-            userPreferences.restrictions.append(id)
+            idsToAppend.forEach {
+                userPreferences.restrictions.append($0)
+            }
         }
         persistUserPreferences()
     }
@@ -128,10 +172,28 @@ class Model {
         }
         Task { @MainActor in
             self.allergens = getDataFromAssetsFor("allergens.json")
+            self.distinctAllergens = []
+            self.allergens.forEach { all in
+                let alreadyIn = distinctAllergens.contains {
+                    $0.name == all.name
+                }
+                if !alreadyIn {
+                    distinctAllergens.append(all)
+                }
+            }
             print("Loaded \(self.allergens.count) allergens")
         }
         Task { @MainActor in
             self.tags = getDataFromAssetsFor("tags.json")
+            self.distinctTags = []
+            self.tags.forEach { all in
+                let alreadyIn = distinctTags.contains {
+                    $0.name == all.name
+                }
+                if !alreadyIn {
+                    distinctTags.append(all)
+                }
+            }
             print("Loaded \(self.tags.count) tags")
         }
         Task { @MainActor in

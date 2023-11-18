@@ -23,7 +23,7 @@ struct SelectRestrictionsView: View {
         var height = CGFloat.zero
 
         return ZStack(alignment: .topLeading) {
-            ForEach(model.tags, id: \.id) { item in
+            ForEach(model.distinctTags, id: \.id) { item in
                 ChipView(titleKey: item.name, isSelected: model.userPreferences.restrictions.contains{
                     $0 == item.id
                 }).onTapGesture {
@@ -37,7 +37,7 @@ struct SelectRestrictionsView: View {
                         height -= d.height
                     }
                     let result = width
-                    if item.id == model.tags.last!.id {
+                    if item.id == model.distinctTags.last!.id {
                         width = 0 //last item
                     } else {
                         width -= d.width
@@ -46,7 +46,7 @@ struct SelectRestrictionsView: View {
                 })
                 .alignmentGuide(.top, computeValue: {d in
                     let result = height
-                    if item.id == model.tags.last!.id {
+                    if item.id == model.distinctTags.last!.id {
                         height = 0 // last item
                     }
                     return result
