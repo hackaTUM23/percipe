@@ -17,7 +17,8 @@ struct RecipeCardView: View {
     ]
     
     var userAlergic: Bool {
-        !recipe.ingredients.map {Model.shared.isAllergen(ingredient: $0)}.reduce(false, { $0 || $1 })
+        recipe.ingredients.first(where: { Model.shared.isAllergen(ingredient: $0) })
+            != nil
     }
     
     var body: some View {

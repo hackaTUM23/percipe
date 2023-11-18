@@ -108,7 +108,7 @@ class Model {
             }
         }
         let sorted = indicesToToggle.sorted(by: { $0 > $1 })
-        if let index = index {
+        if index != nil {
             sorted.forEach {
                 userPreferences.restrictions.remove(at: $0)
             }
