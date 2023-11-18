@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ReplaceIngredient: View {
     let ingredient: RecipeIngredient
+    let onReplace: (RecipeIngredient) -> Void
     let model = Model.shared
     
     var substitutions: [RecipeIngredient] {
@@ -33,19 +34,33 @@ struct ReplaceIngredient: View {
     ]
     
     var body: some View {
-        ScrollView {
-            Text("Select a replacement")
-                .font(.title)
-
-            VStack {
-                IngredientTile(name: ingredient.name, amount: nil, imageUrl: "https://img.hellofresh.com/w_1024,q_auto,f_auto,c_limit,fl_lossy/hellofresh_s3\(ingredient.imagePath ?? "")", isAllergy: self.model.isAllergen(ingredient: ingredient), large: true)
+        VStack {
+            HStack {
+                Text("Select a replacement")
+                    .font(.title)
+                    .padding()
                 
-                LazyVGrid(columns: columns, spacing: 20) {
-                    ForEach(self.substitutions) { subst in
-                        IngredientTile(name: subst.name, amount: nil, imageUrl: "https://img.hellofresh.com/w_1024,q_auto,f_auto,c_limit,fl_lossy/hellofresh_s3\(subst.imagePath ?? "")", isAllergy: self.model.isAllergen(ingredient: subst))
-                    }
+                Spacer()
+            }
+            
+            IngredientTile(name: ingredient.name, amount: nil, imageUrl: "https://img.hellofresh.com/w_1024,q_auto,f_auto,c_limit,fl_lossy/hellofresh_s3\(ingredient.imagePath ?? "")", isAllergy: self.model.isAllergen(ingredient: ingredient), large: true)
+            
+            LazyVGrid(columns: columns, spacing: 20) {
+                ForEach(self.substitutions) { subst in
+                    IngredientTile(name: subst.name, amount: nil, imageUrl: "https://img.hellofresh.com/w_1024,q_auto,f_auto,c_limit,fl_lossy/hellofresh_s3\(subst.imagePath ?? "")", isAllergy: self.model.isAllergen(ingredient: subst))
+                        .onTapGesture {
+                            self.onReplace(subst)
+                        }
                 }
             }
+            
+            Spacer()
+            
+            Button(ingredient.disabled == true ? "Add ingredient" : "Remove ingredient", action: {
+                ingredient.disabled = !(ingredient.disabled ?? false)
+                self.onReplace(ingredient)
+            })
+            .foregroundColor(ingredient.disabled == true ? .black : .red)
         }
     }
 }
@@ -59,7 +74,7 @@ struct ReplaceIngredientPreview: View {
     }
     
     var body: some View {
-        ReplaceIngredient(ingredient: self.recipe.ingredients.first(where: { $0.id == "64df4828614f75555c20f3fa" })!)
+        ReplaceIngredient(ingredient: self.recipe.ingredients.first(where: { $0.id == "64df4828614f75555c20f3fa" })!, onReplace: { _ in })
     }
 }
 

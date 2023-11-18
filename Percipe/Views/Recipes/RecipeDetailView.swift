@@ -19,10 +19,11 @@ struct RecipeDetailView: View {
         3: "Anspruchsvoll"
     ]
     
-    @State var ingredient: RecipeIngredient? = nil
+    @State var replaceIngredient: RecipeIngredient? = nil
+    @State var ingredientsStorage: [RecipeIngredient]
     
     var ingredients: [(RecipeIngredient, Bool)] {
-        recipe.ingredients.map { ingredient in
+        ingredientsStorage.map { ingredient in
             return (ingredient, self.model.isAllergen(ingredient: ingredient))
         }
     }
@@ -33,6 +34,7 @@ struct RecipeDetailView: View {
     
     init(recipe: Recipe) {
         self.recipe = recipe
+        self.ingredientsStorage = recipe.ingredients
         
         if let yields = recipe.yields.first {
             for amount in yields.ingredients {
@@ -99,6 +101,9 @@ struct RecipeDetailView: View {
                     if allergyExists {
                         Image(systemName: "allergens")
                             .foregroundColor(.red)
+                    } else {
+                        Image(systemName: "checkmark.circle")
+                            .foregroundColor(.green)
                     }
                 }
                 .font(.title3)
@@ -110,8 +115,9 @@ struct RecipeDetailView: View {
                         ForEach(ingredients, id: \.0.id) { (ingredient, isAllergy) in
                             IngredientTile(name: ingredient.name, amount: amounts[ingredient.id] ?? "", imageUrl: "https://img.hellofresh.com/w_1024,q_auto,f_auto,c_limit,fl_lossy/hellofresh_s3\(ingredient.imagePath ?? "")", isAllergy: isAllergy)
                                 .onTapGesture {
-                                    self.ingredient = ingredient
+                                    self.replaceIngredient = ingredient
                                 }
+                                .opacity(ingredient.disabled == true ? 0.5 : 1)
                         }
                     }
                     .padding(.horizontal)
@@ -161,8 +167,13 @@ struct RecipeDetailView: View {
             }
         }
         .edgesIgnoringSafeArea(.top)
-        .sheet(item: $ingredient, content: { ingredient in
-            ReplaceIngredient(ingredient: self.model.ingredients.first(where: { $0.id == ingredient.id })!)
+        .sheet(item: $replaceIngredient, content: { ingredient in
+            ReplaceIngredient(ingredient: self.model.ingredients.first(where: { $0.id == ingredient.id })!, onReplace: { replacement in
+                let index = self.ingredientsStorage.firstIndex(where: { $0.id == ingredient.id })!
+                self.ingredientsStorage[index] = replacement
+                
+                self.replaceIngredient = nil
+            })
         })
     }
 }

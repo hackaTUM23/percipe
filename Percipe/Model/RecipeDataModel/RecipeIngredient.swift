@@ -16,6 +16,7 @@ class RecipeIngredient: Codable, Identifiable {
     var allergens: [String]
     var family: Allergen?
     var substitutions: [String]?
+    var disabled: Bool?
 
     init(id: String, uuid: String, name: String, type: String, slug: String, country: Country, imagePath: String?, shipped: Bool, allergens: [String], family: Allergen?, substitutions: [String]?) {
         self.id = id

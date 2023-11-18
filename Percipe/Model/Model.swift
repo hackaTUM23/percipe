@@ -137,7 +137,7 @@ class Model {
         print(ingredient.allergens)
         print("user")
         print(self.userPreferences.allergies)
-        return ingredient.allergens.contains(where: { allergen in
+        return ingredient.disabled != true && ingredient.allergens.contains(where: { allergen in
             self.userPreferences.allergies.contains(where: { allergen == $0 })
         })
     }
