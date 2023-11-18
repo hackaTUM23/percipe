@@ -11,29 +11,35 @@ struct RecipeCardView: View {
     
     let recipe: Recipe
     let difficulties = [
-        1: "Easy",
-        2: "Medium",
-        3: "Challenging"
+        1: "Leicht",
+        2: "Mittel",
+        3: "Schwer"
     ]
+    
+    var userAlergic: Bool {
+        !recipe.ingredients.map {Model.shared.isAllergen(ingredient: $0)}.reduce(false, { $0 || $1 })
+    }
     
     var body: some View {
         HStack {
-            AsyncImage(
-                url: URL(string: "https://img.hellofresh.com/w_1024,q_auto,f_auto,c_limit,fl_lossy/hellofresh_s3\(recipe.imagePath ?? "")"),
-                content: { image in
-                    image.resizable()
-                        .scaledToFill()
+            ZStack {
+                AsyncImage(
+                    url: URL(string: "https://img.hellofresh.com/w_1024,q_auto,f_auto,c_limit,fl_lossy/hellofresh_s3\(recipe.imagePath ?? "")"),
+                    content: { image in
+                        image.resizable()
+                            .scaledToFill()
+                            .frame(width: 150, height: 130)
+                            .clipShape(Rectangle())
+                            .aspectRatio(contentMode: .fill)
+                    },
+                    placeholder: {
+                        ZStack {
+                            ProgressView()
+                        }
                         .frame(width: 150, height: 130)
-                        .clipShape(Rectangle())
-                        .aspectRatio(contentMode: .fill)
-                },
-                placeholder: {
-                    ZStack {
-                        ProgressView()
                     }
-                    .frame(width: 150, height: 130)
-                }
-            )
+                )
+            }
             VStack {
                 Text(recipe.name)
                     .multilineTextAlignment(.center)
@@ -47,6 +53,14 @@ struct RecipeCardView: View {
                 .foregroundStyle(.secondary)
                 Spacer()
                 HStack {
+                    if self.userAlergic {
+                        
+                        Image(systemName: "exclamationmark.triangle")
+                            .foregroundColor(.red)
+                            .font(.title)
+                        Spacer()
+                    }
+                    
                     ForEach(recipe.allergens.filter {$0.iconPath != nil }, id: \.id) { allergen in
                         AsyncImage(
                             url: URL(string: "https://img.hellofresh.com/w_1024,q_auto,f_auto,c_limit,fl_lossy/hellofresh_s3\(allergen.iconPath ?? "")"),
