@@ -12,9 +12,7 @@ struct ContentView: View {
     
     var body: some View {
         if model.hasCompletedOnboarding {
-            NavigationStack {
-                HomeView()
-            }
+            HomeView()
         } else {
             NavigationStack {
                 WelcomeView()

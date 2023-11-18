@@ -22,7 +22,7 @@ struct HomeView: View {
                 .tabItem {
                     Label("Profile", systemImage: "person.crop.circle")
                 }
-        }
+        }.toolbarTitleDisplayMode(.inline)
     }
 }
 

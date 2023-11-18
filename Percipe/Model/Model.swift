@@ -17,6 +17,9 @@ class Model {
     var userPreferences: UserPreferences
     
     var recipes: [Recipe] = []
+    
+    var searchText: String = ""
+    
     var allergens: [Allergen] = []
     var tags: [Tag] = []
     var ingredients: [RecipeIngredient] = []
@@ -59,7 +62,8 @@ class Model {
             }
         }
         Task { @MainActor in
-            self.recipes = [getDataFromAssetsFor("sample_data.json").first!]
+//            self.recipes = [getDataFromAssetsFor("sample_data.json").first!]
+            self.recipes = getDataFromAssetsFor("sample_data.json")
             self.recipes.forEach { item in
                 if self.discoverRecipes.count > 50 {
                    return
