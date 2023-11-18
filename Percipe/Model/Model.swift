@@ -50,6 +50,12 @@ class Model {
         }
     }
     
+    func getIngredientBy(_ id: String) -> RecipeIngredient? {
+        ingredients.first {
+            $0.id == id
+        }
+    }
+    
     func addMatch(id: String) {
         if userPreferences.matchesId.contains(id) {
             return

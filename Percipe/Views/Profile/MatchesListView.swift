@@ -16,7 +16,11 @@ struct MatchesListView: View {
             ForEach(model.userPreferences.matchesId.compactMap { item in
                 model.getRecipeFrom(id: item)
             }, id: \.id) { match in
-                RecipeCardView(recipe: match)
+                NavigationLink {
+                    RecipeDetailView(recipe: match)
+                } label: {
+                    RecipeCardView(recipe: match)
+                }.padding([.horizontal, .top], 20)
             }
         }.navigationTitle("Past matches")
     }

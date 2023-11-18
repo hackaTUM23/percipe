@@ -13,11 +13,13 @@ struct ProfilePictureView: View {
             Image(.carbonara)
                 .resizable()
                 .frame(width: 90, height: 90)
-                .cornerRadius(50)
-                .padding(.leading, 4)
-                .padding(.top, 4)
-            Text("Léon Friedmann")
-                .font(.headline)
+            VStack(alignment: .leading) {
+                Text("Léon Friedmann")
+                    .font(.headline)
+                Text("Memebr since 2021")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }.padding(.leading)
             Spacer()
         }
     }
