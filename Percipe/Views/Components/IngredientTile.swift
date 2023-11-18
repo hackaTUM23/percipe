@@ -20,8 +20,8 @@ struct IngredientTile: View {
                     Spacer()
                 }
                 Text(name)
-                    .lineLimit(1)
-                    .truncationMode(.tail)
+                    .lineLimit(2)
+                    //.truncationMode(.tail)
                     .padding(.top, 30)
                     .fontWeight(.semibold)
                 Text(amount)

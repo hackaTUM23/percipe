@@ -8,16 +8,49 @@
 import SwiftUI
 
 struct RecipeDetailView: View {
-    let recipe: RecipeCardModel
+    let recipe: Recipe
+    
+    var amounts: [String: String] = [:]
+    let difficulties = [
+        "Easy",
+        "Medium",
+        "Challenging"
+    ]
+    
+    init(recipe: Recipe) {
+        self.recipe = recipe
+        
+        if let yields = recipe.yields.first {
+            for amount in yields.ingredients {
+                var str = ""
+                if let amount = amount.amount {
+                    str = String(format: "%.0f ", amount)
+                }
+                str += amount.unit
+                
+                amounts[amount.id] = str
+            }
+        }
+    }
     
     var body: some View {
-        //GeometryReader { geometry in
         ScrollView {
             VStack(alignment: .leading) {
                 ZStack(alignment: .bottomLeading) {
-                    Image(uiImage: recipe.pictures[0])
-                        .resizable()
-                        .scaledToFit()
+                    AsyncImage(
+                        url: URL(string: "https://img.hellofresh.com/w_1024,q_auto,f_auto,c_limit,fl_lossy/hellofresh_s3\(recipe.imagePath ?? "")"),
+                        content: { image in
+                            image.resizable()
+                                .aspectRatio(contentMode: .fill)
+                        },
+                        placeholder: {
+                            ZStack {
+                                ProgressView()
+                            }
+                            .frame(maxWidth: 100)
+                            .frame(height: 200)
+                        }
+                    )
                     VStack {
                         Spacer()
                             .frame(height: 40)
@@ -33,9 +66,9 @@ struct RecipeDetailView: View {
                     ], startPoint: .top, endPoint: .bottom))
                 }
                 
-                JustifiedLabel(text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
+                JustifiedLabel(text: recipe.description)
                     .padding(.horizontal)
-
+                
                 HStack {
                     Label("Easy", systemImage: "frying.pan")
                     Label("25 min", systemImage: "clock")
@@ -48,20 +81,52 @@ struct RecipeDetailView: View {
                     .fontWeight(.semibold)
                     .padding()
                 
-                Text("Here come the ingredients")
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack {
+                        ForEach(recipe.ingredients, id: \.id) { ingredient in
+                            IngredientTile(name: ingredient.name, amount: amounts[ingredient.id] ?? "", imageUrl: "https://img.hellofresh.com/w_1024,q_auto,f_auto,c_limit,fl_lossy/hellofresh_s3\(ingredient.imagePath ?? "")")
+                        }
+                    }
+                    .padding(.horizontal)
+                }
+                
+                Text("Instructions")
+                    .font(.title3)
+                    .fontWeight(.semibold)
                     .padding()
+
+                ForEach(recipe.steps, id: \.index) { step in
+//                    let str: LocalizedStringKey = step.instructionsMarkdown
+                    Text("\(step.index). \(step.instructionsMarkdown)")
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                        .padding(.top)
+                        .padding(.horizontal)
+
+                    
+                }
             }
         }
         .edgesIgnoringSafeArea(.top)
     }
 }
 
+struct RecipeDetailPreview: View {
+    let recipe: Recipe
+    
+    init() {
+        let decoder = JSONDecoder()
+        self.recipe = try! decoder.decode(Recipe.self, from: RecipeJson.data(using: .utf8)!)
+    }
+    
+    var body: some View {
+        RecipeDetailView(recipe: recipe)
+    }
+}
+
 #Preview {
+    
     NavigationStack {
-        RecipeDetailView(
-            recipe: RecipeCardModel(id: UUID(), name: "Creamy mushroom soup", preptime: Duration.seconds(10 * 60), pictures: [
-                UIImage(named: "mushroom-soup")!,
-            ])
-        )
+        RecipeDetailPreview()
     }
 }
