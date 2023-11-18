@@ -15,8 +15,9 @@ class RecipeIngredient: Codable {
     var shipped: Bool
     var allergens: [String]
     var family: Allergen?
+    var substitutions: [String]?
 
-    init(id: String, uuid: String, name: String, type: String, slug: String, country: Country, imagePath: String?, shipped: Bool, allergens: [String], family: Allergen?) {
+    init(id: String, uuid: String, name: String, type: String, slug: String, country: Country, imagePath: String?, shipped: Bool, allergens: [String], family: Allergen?, substitutions: [String]?) {
         self.id = id
         self.uuid = uuid
         self.name = name
@@ -27,6 +28,7 @@ class RecipeIngredient: Codable {
         self.shipped = shipped
         self.allergens = allergens
         self.family = family
+        self.substitutions = substitutions
     }
 }
 
@@ -35,7 +37,7 @@ class RecipeIngredient: Codable {
 extension RecipeIngredient {
     convenience init(data: Data) throws {
         let me = try newJSONDecoder().decode(RecipeIngredient.self, from: data)
-        self.init(id: me.id, uuid: me.uuid, name: me.name, type: me.type, slug: me.slug, country: me.country, imagePath: me.imagePath, shipped: me.shipped, allergens: me.allergens, family: me.family)
+        self.init(id: me.id, uuid: me.uuid, name: me.name, type: me.type, slug: me.slug, country: me.country, imagePath: me.imagePath, shipped: me.shipped, allergens: me.allergens, family: me.family, substitutions: me.substitutions)
     }
 
     convenience init(_ json: String, using encoding: String.Encoding = .utf8) throws {
@@ -59,7 +61,8 @@ extension RecipeIngredient {
         imagePath: String? = nil,
         shipped: Bool? = nil,
         allergens: [String]? = nil,
-        family: Allergen? = nil
+        family: Allergen? = nil,
+        substitutions: [String]? = nil
     ) -> RecipeIngredient {
         return RecipeIngredient(
             id: id ?? self.id,
@@ -71,7 +74,8 @@ extension RecipeIngredient {
             imagePath: imagePath ?? self.imagePath,
             shipped: shipped ?? self.shipped,
             allergens: allergens ?? self.allergens,
-            family: family ?? self.family
+            family: family ?? self.family,
+            substitutions: substitutions ?? self.substitutions
         )
     }
 

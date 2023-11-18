@@ -19,6 +19,7 @@ class Model {
     var recipes: [Recipe] = []
     var allergens: [Allergen] = []
     var tags: [Tag] = []
+    var ingredients: [RecipeIngredient] = []
     
     var discoverRecipes: [RecipeCardModel] = []
     
@@ -84,7 +85,10 @@ class Model {
             self.tags = getDataFromAssetsFor("tags.json")
             print("Loaded \(self.tags.count) tags")
         }
-        
+        Task { @MainActor in
+            self.ingredients = getDataFromAssetsFor("ingredients.json")
+            print("Loaded \(self.ingredients.count) ingredients")
+        }
     }
     
 }
