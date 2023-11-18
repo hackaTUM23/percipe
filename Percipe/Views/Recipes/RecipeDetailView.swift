@@ -76,6 +76,7 @@ struct RecipeDetailView: View {
                     .fontWeight(.semibold)
                     .foregroundColor(.white)
                     .padding()
+                    .frame(maxWidth: .infinity)
                     .background(LinearGradient(colors: [
                         Color.black.opacity(0.0),
                         Color.black.opacity(0.4),
