@@ -88,6 +88,16 @@ class Model {
         return []
     }
     
+    func isAllergen(ingredient: RecipeIngredient) -> Bool {
+        print("ingredient")
+        print(ingredient.allergens)
+        print("user")
+        print(self.userPreferences.allergies)
+        return ingredient.allergens.contains(where: { allergen in
+            self.userPreferences.allergies.contains(where: { allergen == $0 })
+        })
+    }
+    
     init() {
         userPreferences = UserPreferences()
         if let data = UserDefaults.standard.object(forKey: "userPreferences") as? Data {

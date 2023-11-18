@@ -19,13 +19,11 @@ struct RecipeDetailView: View {
         3: "Anspruchsvoll"
     ]
     
+    @State var ingredient: RecipeIngredient? = nil
+    
     var ingredients: [(RecipeIngredient, Bool)] {
         recipe.ingredients.map { ingredient in
-            let isAllergy = ingredient.allergens.contains(where: { allergen in
-                self.model.userPreferences.allergies.contains(where: { allergen == $0 })
-            })
-            
-            return (ingredient, isAllergy)
+            return (ingredient, self.model.isAllergen(ingredient: ingredient))
         }
     }
     
@@ -111,6 +109,9 @@ struct RecipeDetailView: View {
                     HStack {
                         ForEach(ingredients, id: \.0.id) { (ingredient, isAllergy) in
                             IngredientTile(name: ingredient.name, amount: amounts[ingredient.id] ?? "", imageUrl: "https://img.hellofresh.com/w_1024,q_auto,f_auto,c_limit,fl_lossy/hellofresh_s3\(ingredient.imagePath ?? "")", isAllergy: isAllergy)
+                                .onTapGesture {
+                                    self.ingredient = ingredient
+                                }
                         }
                     }
                     .padding(.horizontal)
@@ -160,6 +161,9 @@ struct RecipeDetailView: View {
             }
         }
         .edgesIgnoringSafeArea(.top)
+        .sheet(item: $ingredient, content: { ingredient in
+            ReplaceIngredient(ingredient: self.model.ingredients.first(where: { $0.id == ingredient.id })!)
+        })
     }
 }
 

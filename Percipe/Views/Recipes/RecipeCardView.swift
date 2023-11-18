@@ -26,9 +26,6 @@ struct RecipeCardView: View {
                         .frame(width: 150, height: 130)
                         .clipShape(Rectangle())
                         .aspectRatio(contentMode: .fill)
-                        
-                        
-                        
                 },
                 placeholder: {
                     ZStack {

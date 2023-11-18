@@ -7,7 +7,7 @@
 
 import Foundation
 
-class RecipeIngredient: Codable {
+class RecipeIngredient: Codable, Identifiable {
     var id, uuid, name, type: String
     var slug: String
     var country: Country
