@@ -21,31 +21,33 @@ struct ProfileView: View {
     }
         
     var body: some View {
-        VStack {
-            HStack {
-                ProfilePictureView().padding(.leading, 4)
-            }
-            HStack {
-                Button("Edit Allergies", systemImage: "allergens") {
-                    showAllergensSheet.toggle()
+        NavigationStack {
+            VStack {
+                HStack {
+                    ProfilePictureView().padding(.leading, 4)
                 }
-                
-                Button("Diet restrictions", systemImage: "figure.wrestling") {
-                    showRestrictionSheet.toggle()
+                HStack {
+                    Button("Edit Allergies", systemImage: "allergens") {
+                        showAllergensSheet.toggle()
+                    }
+                    
+                    Button("Diet restrictions", systemImage: "figure.wrestling") {
+                        showRestrictionSheet.toggle()
+                    }
+                }
+                .padding(.top, 16)
+                NavigationLink(model.userPreferences.matchesId.count.description + " past matches", destination: MatchesListView())
+                Spacer()
+            }
+            .sheet(isPresented: $showAllergensSheet) {
+                NavigationView {
+                    SelectAllergiesView()
                 }
             }
-            .padding(.top, 16)
-            NavigationLink(model.userPreferences.matchesId.count.description + " past matches", destination: MatchesListView())
-            Spacer()
-        }
-        .sheet(isPresented: $showAllergensSheet) {
-            NavigationView {
-                SelectAllergiesView()
-            }
-        }
-        .sheet(isPresented: $showRestrictionSheet) {
-            NavigationView {
-                SelectRestrictionsView()
+            .sheet(isPresented: $showRestrictionSheet) {
+                NavigationView {
+                    SelectRestrictionsView()
+                }
             }
         }
         .padding(.horizontal, 16)
