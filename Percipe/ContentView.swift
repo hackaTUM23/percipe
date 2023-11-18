@@ -8,14 +8,18 @@
 import SwiftUI
 
 struct ContentView: View {
+    var model = Model.shared
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        if model.hasCompletedOnboarding {
+            NavigationStack {
+                HomeView()
+            }
+        } else {
+            NavigationStack {
+                WelcomeView()
+            }
         }
-        .padding()
     }
 }
 

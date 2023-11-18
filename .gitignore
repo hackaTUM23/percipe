@@ -1,3 +1,5 @@
 *.pbxproj
 Percipe.xcodeproj/**
 *.xcscheme
+.DS_Store
+
