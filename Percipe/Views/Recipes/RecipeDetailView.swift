@@ -70,13 +70,15 @@ struct RecipeDetailView: View {
                     VStack {
                         Spacer()
                             .frame(height: 40)
-                        Text(recipe.name)
+                        HStack {
+                            Text(recipe.name)
+                            Spacer()
+                        }
                     }
                     .font(.title)
                     .fontWeight(.semibold)
                     .foregroundColor(.white)
                     .padding()
-                    .frame(maxWidth: .infinity)
                     .background(LinearGradient(colors: [
                         Color.black.opacity(0.0),
                         Color.black.opacity(0.4),
@@ -87,7 +89,7 @@ struct RecipeDetailView: View {
                     .padding(.horizontal)
                 
                 let durationMins = recipe.prepTime.parseIso8601Interval()
-
+                
                 HStack {
                     Label(difficulties[recipe.difficulty] ?? "Easy", systemImage: "frying.pan")
                     Label("\(durationMins.components.seconds / 60) min", systemImage: "clock")
@@ -104,7 +106,7 @@ struct RecipeDetailView: View {
                 .font(.title3)
                 .fontWeight(.semibold)
                 .padding()
-
+                
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack {
                         ForEach(ingredients, id: \.0.id) { (ingredient, isAllergy) in
@@ -136,7 +138,7 @@ struct RecipeDetailView: View {
                                     .frame(height: 200)
                                 }
                             )
-
+                            
                             Text("\(step.index). \(image.caption)")
                                 .font(.headline)
                                 .fontWeight(.semibold)
