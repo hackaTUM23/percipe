@@ -9,7 +9,16 @@ import SwiftUI
 
 struct HomeView: View {
     var body: some View {
-        Text("Home")
+        TabView {
+            DiscoverView()
+                .tabItem {
+                    Label("Discover", systemImage: "magnifyingglass")
+                }
+            RecipesList()
+                .tabItem {
+                    Label("Recipes", systemImage: "list.bullet")
+                }
+        }
     }
 }
 
