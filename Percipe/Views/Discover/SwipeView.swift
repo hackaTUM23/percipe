@@ -200,19 +200,30 @@ struct SwipeCardView: View {
     var body: some View {
         ZStack(alignment: .bottom){
             GeometryReader{ geometry in
-                Image(uiImage: model.pictures[currentImageIndex])
-                    .resizable()
-                    .scaledToFill()
-                    .frame(alignment: .center)
-                    .gesture(DragGesture(minimumDistance: 0).onEnded({ value in
-                        if value.translation.equalTo(.zero){
-                            if(value.location.x <= geometry.size.width/2){
-                                showPrevPicture()
-                            } else {
-                                showNextPicture()
-                            }
+                AsyncImage(
+                    url: URL(string: "https://img.hellofresh.com/w_1024,q_auto,f_auto,c_limit,fl_lossy/hellofresh_s3\(model.pictures[currentImageIndex] ?? "")"),
+                    content: { image in
+                        image.resizable()
+                            .scaledToFill()
+                            .frame(alignment: .center)
+                            .clipShape(Rectangle())
+                            .aspectRatio(contentMode: .fill)
+                    },
+                    placeholder: {
+                        ZStack {
+                            ProgressView()
                         }
-                    }))
+                    }
+                )
+                .gesture(DragGesture(minimumDistance: 0).onEnded({ value in
+                    if value.translation.equalTo(.zero){
+                        if(value.location.x <= geometry.size.width/2){
+                            showPrevPicture()
+                        } else {
+                            showNextPicture()
+                        }
+                    }
+                }))
             }
             
             VStack{
@@ -230,7 +241,6 @@ struct SwipeCardView: View {
                 VStack{
                     HStack(alignment: .firstTextBaseline){
                         Text(model.name).font(.largeTitle).fontWeight(.semibold)
-                        //                        Text("\(model.duration.formatted())").font(.title).fontWeight(.medium)
                         Spacer()
                     }
                 }
@@ -297,28 +307,5 @@ struct SwipeCardView: View {
         } catch {
             print("There was an error creating the engine: \(error.localizedDescription)")
         }
-    }
-}
-
-
-struct SwipeView_Previews: PreviewProvider {
-    @State static private var recipes: [RecipeCardModel] = [
-        RecipeCardModel(id: UUID(), name: "Pasta Carbonara", preptime: Duration.seconds(10 * 60), pictures: [
-            UIImage(named: "carbonara")!,
-            UIImage(named: "carbonara2")!,
-            UIImage(named: "carbonara")!,
-            UIImage(named: "carbonara2")!,
-            UIImage(named: "carbonara")!,
-        ]),
-        RecipeCardModel(id: UUID(), name: "Pasta Carbonara", preptime: Duration.seconds(10 * 60), pictures: [
-            UIImage(named: "carbonara2")!,
-            UIImage(named: "carbonara")!,
-            UIImage(named: "carbonara2")!,
-            UIImage(named: "carbonara")!,
-            UIImage(named: "carbonara2")!,
-        ]),
-    ]
-    static var previews: some View {
-        SwipeView(recipes: $recipes, onSwiped: {_,_ in})
     }
 }

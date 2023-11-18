@@ -18,6 +18,10 @@ struct HomeView: View {
                 .tabItem {
                     Label("Recipes", systemImage: "list.bullet")
                 }
+            ProfileView()
+                .tabItem {
+                    Label("Profile", systemImage: "person.crop.circle")
+                }
         }
     }
 }

@@ -11,23 +11,7 @@ import CoreHaptics
 struct SelectAllergiesView: View {
     
     var model: Model = Model.shared
-    
-    var mockAllergies = [
-        "Meat",
-        "People",
-        "Apples",
-        "Oranges",
-        "Bananas",
-        "Coffeine",
-        "Vegetables",
-        "Butter",
-        "Milk",
-        "Something",
-        "idk",
-        "what",
-        "why"
-    ]
-    
+
     private func onTap(item: String) {
         withAnimation {
             let index = model.userPreferences.allergies.firstIndex(of: item)

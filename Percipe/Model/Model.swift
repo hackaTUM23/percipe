@@ -20,23 +20,7 @@ class Model {
     var allergens: [Allergen] = []
     var tags: [Tag] = []
     
-    var discoverRecipes = [
-        RecipeCardModel(id: UUID(), name: "Pasta Carbonara", preptime: Duration.seconds(10 * 60), pictures: [
-            UIImage(named: "carbonara")!,
-            UIImage(named: "carbonara2")!,
-            UIImage(named: "carbonara")!,
-            UIImage(named: "carbonara2")!,
-            UIImage(named: "carbonara")!,
-        ]),
-        RecipeCardModel(id: UUID(), name: "Pasta Carbonara", preptime: Duration.seconds(10 * 60), pictures: [
-            UIImage(named: "carbonara")!,
-            UIImage(named: "carbonara2")!,
-            UIImage(named: "carbonara")!,
-            UIImage(named: "carbonara2")!,
-            UIImage(named: "carbonara")!,
-        ]),
-    ]
-    
+    var discoverRecipes: [RecipeCardModel] = []
     
     func completeOnboarding() {
         hasCompletedOnboarding = true
@@ -75,6 +59,21 @@ class Model {
         }
         Task { @MainActor in
             self.recipes = getDataFromAssetsFor("sample_data.json")
+            self.recipes.forEach { item in
+                if self.discoverRecipes.count > 50 {
+                   return
+                }
+                var imagePaths: [String] = []
+                if let initialImage = item.imagePath {
+                    imagePaths.append(initialImage)
+                }
+                item.steps.forEach { step in
+                    step.images.forEach { stepImage in
+                        imagePaths.append(stepImage.path)
+                    }
+                }
+                self.discoverRecipes.append(RecipeCardModel(id: item.id, name: item.name, preptime: item.prepTime.parseIso8601Interval(), pictures: imagePaths))
+            }
             print("Loaded \(self.recipes.count) recipes")
         }
         Task { @MainActor in
@@ -94,4 +93,5 @@ class Model {
 class UserPreferences : Codable {
     var allergies: [String] = []
     var restrictions: [String] = []
+    var matchesId: [String] = []
 }

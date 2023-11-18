@@ -14,7 +14,7 @@ struct ChipView: View {
     @Environment(\.colorScheme) var colorScheme
     
     func getBackground() -> Color {
-        var color = colorScheme == .light ? Color.black : Color.gray;
+        var color = Color.gray
         if isSelected {
             color = color.opacity(1)
         } else {
@@ -28,8 +28,8 @@ struct ChipView: View {
             Text(titleKey).font(.body).lineLimit(1)
         }
         .padding(.vertical, 10)
-        .padding(.leading, 15)
-        .padding(.trailing, 15)
+        .padding(.leading, 10)
+        .padding(.trailing, 10)
         .foregroundColor(colorScheme == .light ? .black : .white)
         .background(getBackground())
         .cornerRadius(4)
@@ -41,5 +41,5 @@ struct ChipView: View {
 }
 
 #Preview {
-    ChipView(titleKey: "Meat", isSelected: false)
+    ChipView(titleKey: "Meat", isSelected: true)
 }
