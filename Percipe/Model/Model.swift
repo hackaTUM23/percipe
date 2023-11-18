@@ -14,6 +14,8 @@ class Model {
     
     var hasCompletedOnboarding = UserDefaults.standard.bool(forKey: "onboarding.completed")
     
+    var userPreferences: UserPreferences
+    
     var recipes: [Recipe] = []
     var allergens: [Allergen] = []
     var tags: [Tag] = []
@@ -39,6 +41,16 @@ class Model {
     func completeOnboarding() {
         hasCompletedOnboarding = true
         UserDefaults.standard.setValue(true, forKey: "onboarding.completed")
+        persistUserPreferences()
+    }
+    
+    func persistUserPreferences() {
+        Task {
+            let encoder = JSONEncoder()
+            if let encoded = try? encoder.encode(userPreferences) {
+                UserDefaults.standard.set(encoded, forKey: "userPreferences")
+            }
+        }
     }
     
     private func getDataFromAssetsFor<T: Codable>(_ fileName: String) -> [T] {
@@ -54,7 +66,13 @@ class Model {
     }
     
     init() {
-        
+        userPreferences = UserPreferences()
+        if let data = UserDefaults.standard.object(forKey: "userPreferences") as? Data {
+            let decoder = JSONDecoder()
+            if let savedData = try? decoder.decode(UserPreferences.self, from: data) {
+                self.userPreferences = savedData
+            }
+        }
         Task { @MainActor in
             self.recipes = getDataFromAssetsFor("sample_data.json")
             print("Loaded \(self.recipes.count) recipes")
@@ -68,21 +86,12 @@ class Model {
             print("Loaded \(self.tags.count) tags")
         }
         
-        
     }
     
 }
 
 @Observable
-class UserPreferences {
-    var allergies: [Allergy] = []
-    var restrictions: [Restriction] = []
-}
-
-struct Allergy {
-    let name: String
-}
-
-struct Restriction {
-    let name: String
+class UserPreferences : Codable {
+    var allergies: [String] = []
+    var restrictions: [String] = []
 }
