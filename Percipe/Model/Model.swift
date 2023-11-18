@@ -10,11 +10,11 @@ import UIKit
 
 @Observable
 class Model {
-    private init() {}
-    
     static let shared = Model()
     
     var hasCompletedOnboarding = UserDefaults.standard.bool(forKey: "onboarding.completed")
+    
+    var recipes: [Recipe] = []
     
     var discoverRecipes = [
         RecipeCardModel(id: UUID(), name: "Pasta Carbonara", preptime: Duration.seconds(10 * 60), pictures: [
@@ -37,6 +37,19 @@ class Model {
     func completeOnboarding() {
         hasCompletedOnboarding = true
         UserDefaults.standard.setValue(true, forKey: "onboarding.completed")
+    }
+    
+    init() {
+        if let asset = NSDataAsset(name: "sample_data.json") {
+            do {
+                let decoder = JSONDecoder()
+                Task { @MainActor in
+                    self.recipes = try decoder.decode([Recipe].self, from: asset.data)
+                }
+            } catch {
+                print("Error decoding JSON: \(error)")
+            }
+        }
     }
     
 }
