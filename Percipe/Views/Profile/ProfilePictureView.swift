@@ -14,8 +14,11 @@ struct ProfilePictureView: View {
                 .resizable()
                 .frame(width: 90, height: 90)
                 .cornerRadius(50)
+                .padding(.leading, 4)
+                .padding(.top, 4)
             Text("Léon Friedmann")
                 .font(.headline)
+            Spacer()
         }
     }
 }

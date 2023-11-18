@@ -13,12 +13,7 @@ struct SelectRestrictionsView: View {
     
     private func onTap(item: String) {
         withAnimation {
-            let index = model.userPreferences.restrictions.firstIndex(of: item)
-            if let index = index {
-                model.userPreferences.restrictions.remove(at: index)
-            } else {
-                model.userPreferences.restrictions.append(item)
-            }
+            model.toggleRestriction(id: item)
             hapticFeedback()
         }
     }

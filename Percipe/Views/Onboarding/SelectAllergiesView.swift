@@ -14,12 +14,7 @@ struct SelectAllergiesView: View {
 
     private func onTap(item: String) {
         withAnimation {
-            let index = model.userPreferences.allergies.firstIndex(of: item)
-            if let index = index {
-                model.userPreferences.allergies.remove(at: index)
-            } else {
-                model.userPreferences.allergies.append(item)
-            }
+            model.toggleAllergy(id: item)
             hapticFeedback()
         }
     }

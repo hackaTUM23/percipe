@@ -35,6 +35,7 @@ struct ProfileView: View {
                 }
             }
             .padding(.top, 16)
+            NavigationLink(model.userPreferences.matchesId.count.description + " past matches", destination: MatchesListView())
             Spacer()
         }
         .sheet(isPresented: $showAllergensSheet) {

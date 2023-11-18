@@ -17,6 +17,7 @@ enum SwipeAction{
 }
 
 struct SwipeView: View {
+    var appModel = Model.shared
     @Binding var recipes: [RecipeCardModel]
     @State var swipeAction: SwipeAction = .doNothing
     //Bool: true if it was a like (swipe to the right
@@ -52,6 +53,9 @@ struct SwipeView: View {
     
     private func performSwipe(userProfile: RecipeCardModel, hasLiked: Bool){
         removeTopItem()
+        if (hasLiked) {
+            appModel.addMatch(id: userProfile.id)
+        }
         onSwiped(userProfile, hasLiked)
     }
     
@@ -203,16 +207,12 @@ struct SwipeCardView: View {
                 AsyncImage(
                     url: URL(string: "https://img.hellofresh.com/w_1024,q_auto,f_auto,c_limit,fl_lossy/hellofresh_s3\(model.pictures[currentImageIndex] ?? "")"),
                     content: { image in
-                        image.resizable()
-                            .scaledToFill()
-                            .frame(alignment: .center)
-                            .clipShape(Rectangle())
-                            .aspectRatio(contentMode: .fill)
+                        image
+                            .centerCropped()
                     },
                     placeholder: {
-                        ZStack {
-                            ProgressView()
-                        }
+                        Image(.whitePlaceholder)
+                            .centerCropped()
                     }
                 )
                 .gesture(DragGesture(minimumDistance: 0).onEnded({ value in

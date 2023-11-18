@@ -64,3 +64,15 @@ extension String {
         return Duration.seconds(second + minute * 60 + hour * 3600)
     }
 }
+
+extension Image {
+    func centerCropped() -> some View {
+        GeometryReader { geo in
+            self
+            .resizable()
+            .scaledToFill()
+            .frame(width: geo.size.width, height: geo.size.height)
+            .clipped()
+        }
+    }
+}

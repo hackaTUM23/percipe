@@ -37,8 +37,43 @@ class Model {
             let encoder = JSONEncoder()
             if let encoded = try? encoder.encode(userPreferences) {
                 UserDefaults.standard.set(encoded, forKey: "userPreferences")
+                UserDefaults.standard.synchronize()
             }
         }
+    }
+    
+    func getRecipeFrom(id: String) -> Recipe? {
+        recipes.first {
+            $0.id == id
+        }
+    }
+    
+    func addMatch(id: String) {
+        if userPreferences.matchesId.contains(id) {
+            return
+        }
+        userPreferences.matchesId.append(id)
+        persistUserPreferences()
+    }
+    
+    func toggleAllergy(id: String) {
+        let index = userPreferences.allergies.firstIndex(of: id)
+        if let index = index {
+            userPreferences.allergies.remove(at: index)
+        } else {
+            userPreferences.allergies.append(id)
+        }
+        persistUserPreferences()
+    }
+    
+    func toggleRestriction(id: String) {
+        let index = userPreferences.restrictions.firstIndex(of: id)
+        if let index = index {
+            userPreferences.restrictions.remove(at: index)
+        } else {
+            userPreferences.restrictions.append(id)
+        }
+        persistUserPreferences()
     }
     
     private func getDataFromAssetsFor<T: Codable>(_ fileName: String) -> [T] {
@@ -65,7 +100,7 @@ class Model {
 //            self.recipes = [getDataFromAssetsFor("sample_data.json").first!]
             self.recipes = getDataFromAssetsFor("sample_data.json")
             self.recipes.forEach { item in
-                if self.discoverRecipes.count > 50 {
+                if self.discoverRecipes.count > 50 || self.userPreferences.matchesId.contains(item.id) {
                    return
                 }
                 var imagePaths: [String] = []
