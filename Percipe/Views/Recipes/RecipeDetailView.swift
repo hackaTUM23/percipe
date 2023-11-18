@@ -14,10 +14,24 @@ struct RecipeDetailView: View {
     
     var amounts: [String: String] = [:]
     let difficulties = [
-        1: "Easy",
-        2: "Medium",
-        3: "Challenging"
+        1: "Leicht",
+        2: "Mittel",
+        3: "Anspruchsvoll"
     ]
+    
+    var ingredients: [(RecipeIngredient, Bool)] {
+        recipe.ingredients.map { ingredient in
+            let isAllergy = ingredient.allergens.contains(where: { allergen in
+                self.model.userPreferences.allergies.contains(where: { allergen == $0 })
+            })
+            
+            return (ingredient, isAllergy)
+        }
+    }
+    
+    var allergyExists: Bool {
+        ingredients.contains(where: { $0.1 })
+    }
     
     init(recipe: Recipe) {
         self.recipe = recipe
@@ -79,15 +93,21 @@ struct RecipeDetailView: View {
                 }
                 .padding(.horizontal)
                 
-                Text("Ingredients")
-                    .font(.title3)
-                    .fontWeight(.semibold)
-                    .padding()
-                
+                HStack {
+                    Text("Ingredients")
+                    if allergyExists {
+                        Image(systemName: "allergens")
+                            .foregroundColor(.red)
+                    }
+                }
+                .font(.title3)
+                .fontWeight(.semibold)
+                .padding()
+
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack {
-                        ForEach(recipe.ingredients, id: \.id) { ingredient in
-                            IngredientTile(name: ingredient.name, amount: amounts[ingredient.id] ?? "", imageUrl: "https://img.hellofresh.com/w_1024,q_auto,f_auto,c_limit,fl_lossy/hellofresh_s3\(ingredient.imagePath ?? "")", isAllergy: self.model.userPreferences.allergies.contains(where: { ingredient.id == $0 }))
+                        ForEach(ingredients, id: \.0.id) { (ingredient, isAllergy) in
+                            IngredientTile(name: ingredient.name, amount: amounts[ingredient.id] ?? "", imageUrl: "https://img.hellofresh.com/w_1024,q_auto,f_auto,c_limit,fl_lossy/hellofresh_s3\(ingredient.imagePath ?? "")", isAllergy: isAllergy)
                         }
                     }
                     .padding(.horizontal)

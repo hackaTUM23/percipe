@@ -59,7 +59,7 @@ class Model {
             }
         }
         Task { @MainActor in
-            self.recipes = getDataFromAssetsFor("sample_data.json")
+            self.recipes = [getDataFromAssetsFor("sample_data.json").first!]
             self.recipes.forEach { item in
                 if self.discoverRecipes.count > 50 {
                    return
