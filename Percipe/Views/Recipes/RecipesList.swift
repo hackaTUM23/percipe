@@ -9,11 +9,20 @@ import SwiftUI
 
 struct RecipesList: View {
     var body: some View {
-        List {
-            Text("Recipe 1")
-            Text("Recipe 2")
-            Text("Recipe 3")
-            Text("Recipe 4")
+        NavigationStack {
+            ScrollView {
+                ForEach(Model.shared.recipes, id: \.id) { recipe in
+                    NavigationLink {
+                        RecipeDetailView(recipe: recipe)
+                    } label: {
+                        RecipeCardView(recipe: recipe)
+                            .padding([.top, .horizontal], 10)
+                    }
+
+                    
+                }
+            }.background(Color(uiColor: .secondarySystemBackground))
+                .navigationTitle("Recipes")
         }
     }
 }
