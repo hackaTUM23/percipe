@@ -24,7 +24,7 @@ targets:
     settings:
       type: application
       base:
-        DEVELOPMENT_TEAM: "7PLLZ436SG"
+        #DEVELOPMENT_TEAM: "7PLLZ436SG"
         PRODUCT_BUNDLE_IDENTIFIER: "de.percipe"
         PRODUCT_NAME: Percipe
         TARGETED_DEVICE_FAMILY: 1
@@ -49,15 +49,3 @@ targets:
         product: CachedAsyncImage
       - package: SwiftUI-Tooltip
         product: SwiftUITooltip
-    preBuildScripts:
-      - name: Swiftlint
-        script: |
-          if [ "${CONFIGURATION}" == "Debug" ]; then
-            export PATH="$PATH:/opt/homebrew/bin"
-            if which swiftlint > /dev/null; then
-              swiftlint
-            else
-              echo "warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint"
-            fi
-          fi
-        basedOnDependencyAnalysis: false
