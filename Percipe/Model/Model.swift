@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 @Observable
 class Model {
@@ -14,6 +15,23 @@ class Model {
     static let shared = Model()
     
     var hasCompletedOnboarding = UserDefaults.standard.bool(forKey: "onboarding.completed")
+    
+    var discoverRecipes = [
+        RecipeCardModel(id: UUID(), name: "Pasta Carbonara", preptime: Duration.seconds(10 * 60), pictures: [
+            UIImage(named: "carbonara")!,
+            UIImage(named: "carbonara2")!,
+            UIImage(named: "carbonara")!,
+            UIImage(named: "carbonara2")!,
+            UIImage(named: "carbonara")!,
+        ]),
+        RecipeCardModel(id: UUID(), name: "Pasta Carbonara", preptime: Duration.seconds(10 * 60), pictures: [
+            UIImage(named: "carbonara")!,
+            UIImage(named: "carbonara2")!,
+            UIImage(named: "carbonara")!,
+            UIImage(named: "carbonara2")!,
+            UIImage(named: "carbonara")!,
+        ]),
+    ]
     
     
     func completeOnboarding() {
