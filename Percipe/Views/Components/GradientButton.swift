@@ -19,7 +19,7 @@ struct GradientOutlineButton: View {
                 .font(.system(size: 24, weight: .bold))
                 .foregroundGradient(colors: colors)
                 .padding()
-                .overlay(Ellipse()
+                .overlay(Circle()
                     .stroke(LinearGradient(gradient: .init(colors: colors),
                                            startPoint: .topLeading,
                                            endPoint: .bottomTrailing),
