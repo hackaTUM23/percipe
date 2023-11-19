@@ -80,12 +80,12 @@ struct ProfileView: View {
             .background(Color(uiColor: .systemGroupedBackground))
             .sheet(isPresented: $showAllergensSheet) {
                 NavigationView {
-                    SelectAllergiesView()
+                    AllergiesListView().navigationTitle("Your allergies")
                 }
             }
             .sheet(isPresented: $showRestrictionSheet) {
                 NavigationView {
-                    SelectRestrictionsView()
+                    RestrictionsListView().navigationTitle("Your dietary restrictions")
                 }
             }
         }
