@@ -16,7 +16,7 @@ struct ProfilePictureView: View {
             VStack(alignment: .leading) {
                 Text("Léon Friedmann")
                     .font(.headline)
-                Text("Memebr since 2021")
+                Text("Memeber since 2021")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }.padding(.leading)

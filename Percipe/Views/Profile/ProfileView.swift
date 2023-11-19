@@ -20,10 +20,14 @@ struct ProfileView: View {
         })
     }
         
-    var favoriteIngredients: [String: [RecipeIngredient]] {
-        Dictionary(grouping: model.userPreferences.matchesId.compactMap {
-            model.getRecipeFrom(id: $0)
-        }.flatMap(\.ingredients), by: { $0.id })
+    var favoriteIngredients: [RecipeIngredient] {
+        Array(Dictionary(grouping: model.userPreferences.matchesId
+            .compactMap { model.getRecipeFrom(id: $0) }
+            .flatMap(\.ingredients), by: { $0.id })
+            .sorted(by: {$0.value.count < $1.value.count})
+            .compactMap { model.getIngredientBy($0.key)}
+            .filter { !model.isAllergen(ingredient: $0)}
+            .prefix(3))
     }
     
     var body: some View {
@@ -71,9 +75,21 @@ struct ProfileView: View {
                 }.background(Color(uiColor: .systemBackground))
                     .clipShape(RoundedRectangle(cornerRadius: 15))
                     .padding([.top, .horizontal])
-                if let ingredient = model.getIngredientBy(favoriteIngredients.first!.key) {
-                    IngredientTile(name: ingredient.name, amount: nil, imageUrl: "https://img.hellofresh.com/w_1024,q_auto,f_auto,c_limit,fl_lossy/hellofresh_s3\(ingredient.imagePath ?? "")", isAllergy: model.isAllergen(ingredient: ingredient))
-                }
+                VStack {
+                    Text("Favorite Ingredients")
+                        .font(.headline)
+                        .padding([.horizontal, .top])
+                    HStack {
+                        Spacer()
+                        ForEach(favoriteIngredients, id: \.id) { ingredient in
+                            IngredientTile(name: ingredient.name, amount: nil, imageUrl: "https://img.hellofresh.com/w_1024,q_auto,f_auto,c_limit,fl_lossy/hellofresh_s3\(ingredient.imagePath ?? "")", isAllergy: model.isAllergen(ingredient: ingredient))
+                                .padding([.vertical])
+                        }
+                        Spacer()
+                    }
+                }.background(Color(uiColor: .systemBackground))
+                    .clipShape(RoundedRectangle(cornerRadius: 15))
+                    .padding([.top, .horizontal])
                 Spacer()
             }
             .navigationTitle("Profil")
