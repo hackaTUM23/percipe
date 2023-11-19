@@ -18,7 +18,7 @@ struct RecipeCardView: View {
     
     var userAlergic: Bool {
         recipe.ingredients.first(where: { Model.shared.isAllergen(ingredient: $0) })
-            != nil
+        != nil
     }
     
     var body: some View {
@@ -41,9 +41,9 @@ struct RecipeCardView: View {
                     }
                 )
             }
-            VStack {
+            VStack(alignment: .leading) {
                 Text(recipe.name)
-                    .multilineTextAlignment(.center)
+                    .multilineTextAlignment(.leading)
                 let durationMins = recipe.prepTime.parseIso8601Interval()
                 Spacer()
                 HStack {
@@ -67,7 +67,7 @@ struct RecipeCardView: View {
                             url: URL(string: "https://img.hellofresh.com/w_1024,q_auto,f_auto,c_limit,fl_lossy/hellofresh_s3\(allergen.iconPath ?? "")"),
                             content: { image in
                                 image.resizable()
-                                    
+                                
                                     .aspectRatio(contentMode: .fill)
                                     .frame(width: 25, height: 25)
                                 
